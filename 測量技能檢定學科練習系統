@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>建國科大二專二技測量學期中考</title>
+  
+  <!-- 加入這行：停用 Referrer 傳遞，避開圖片伺服器的來源檢查 -->
+  <meta name="referrer" content="no-referrer">
+
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --text-main: #0f172a;
+      --text-sub: #64748b;
+      --correct-bg: #dcfce7;
+      --correct-border: #86efac;
+      --wrong-bg: #fee2e2;
+      --wrong-border: #fca5a5;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      margin: 0;
+      padding: 24px 16px;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border);
+      padding: 28px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+
+    .header-title h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      color: var(--text-main);
+    }
+
+    .header-title p {
+      margin: 4px 0 0;
+      font-size: 0.875rem;
+      color: var(--text-sub);
+    }
+
+    .timer-badge {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #b91c1c;
+      background: #fef2f2;
+      border: 1px solid var(--wrong-border);
+      padding: 6px 16px;
+      border-radius: 8px;
+      letter-spacing: 1px;
+    }
+
+    .user-info-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #f1f5f9;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+    }
+
+    .user-info-bar label {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .user-info-bar input {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      font-size: 0.95rem;
+      flex-grow: 1;
+      max-width: 260px;
+    }
+
+    .question-card {
+      padding: 18px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .question-card:last-child {
+      border-bottom: none;
+    }
+
+    .question-heading {
+      font-weight: 600;
+      font-size: 1.05rem;
+      margin-bottom: 12px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #3b82f6;
+      background: #eff6ff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    .options-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* 調整為頂部對齊，避免圖片過高時 radio 按鈕漂移到中間 */
+    .option-item {
+      display: flex;
+      align-items: flex-start;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #fafafa;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .option-item:hover {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+    }
+
+    .option-item input[type="radio"] {
+      margin-top: 4px;
+      margin-right: 12px;
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .option-content {
+      flex-grow: 1;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 14px 20px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 28px;
+      transition: background 0.15s;
+    }
+
+    .btn:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    .result-panel {
+      display: none;
+      margin-top: 30px;
+      padding: 24px;
+      border-radius: 10px;
+      background: #f0fdf4;
+      border: 1px solid var(--correct-border);
+      text-align: center;
+    }
+
+    .result-score {
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: #15803d;
+      margin: 6px 0;
+    }
+
+    .status-msg {
+      text-align: center;
+      padding: 48px 0;
+      color: var(--text-sub);
+      font-size: 1.1rem;
+    }
+
+    .correct-choice {
+      background: var(--correct-bg) !important;
+      border-color: var(--correct-border) !important;
+      font-weight: 600;
+    }
+
+    .wrong-choice {
+      background: var(--wrong-bg) !important;
+      border-color: var(--wrong-border) !important;
+    }
+
+    /* 測驗圖片樣式約束 */
+    .exam-img {
+      max-width: 100%;
+      max-height: 220px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      display: block;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="header-title">
+      <h1>測量技能檢定學科練習系統</h1>
+      <p>標準檢定：單選 80 題，每題 1.25 分，滿分 100 分（60 分及格）</p>
+    </div>
+    <div class="timer-badge" id="timer">45:00</div>
+  </div>
+
+  <div class="user-info-bar">
+    <label for="student-name">考生學號 / 姓名：</label>
+    <input type="text" id="student-name" placeholder="請輸入姓名後開始作答" required>
+  </div>
+
+  <!-- 資料載入提示區 -->
+  <div id="loading" class="status-msg">
+    正在從 Google 試算表題庫隨機抽取 80 題，請稍候...
+  </div>
+
+  <!-- 題目渲染區 -->
+  <div id="exam-container" style="display: none;"></div>
+
+  <button class="btn" id="submit-btn" onclick="submitExam()" style="display: none;">繳卷並結算成績</button>
+
+  <!-- 成績結算結果面板 -->
+  <div id="result-view" class="result-panel">
+    <div style="font-size: 1.1rem; color: #166534; font-weight: 600;">測驗完成！</div>
+    <div class="result-score" id="score-text">0 分</div>
+    <p id="details-text" style="color: #1e293b; margin: 10px 0; font-size: 1rem;"></p>
+    <small style="color: #64748b;">作答紀錄已同步寫入 Google 試算表。綠底為正確解答，紅底為您選擇的錯誤答案。</small>
+  </div>
+</div>
+
+<script>
+  // ==========================================
+  // ⚠️ 請確認為最新的 Google Apps Script 部署 URL
+  // ==========================================
+  const GAS_API_URL = "https://script.google.com/macros/s/AKfycby16pPavbfgZwqXPL7-YObFalzgYRJbkHjBB5jblyXc12HPXWnM_FHprO6iZJcyn74/exec";
+
+  let examData = [];
+  let timeLeft = 45 * 60; // 45 分鐘
+  let timerInterval = null;
+
+  // 輔助函式：判斷純文字或圖片網址，並轉換為 img 標籤
+function formatContent(content) {
+  if (!content) return "";
+  if (typeof content === "object") return "";
+
+  const str = String(content).trim();
+
+  // 判斷是否為網址格式
+  const isUrl = /^https?:\/\/[^\s]+$/i.test(str);
+
+  if (isUrl) {
+    let imgSrc = str;
+    // Google 雲端硬碟檔案自動轉換為直接縮圖檢視
+    if (imgSrc.includes("drive.google.com/file/d/")) {
+      const match = imgSrc.match(/\/d\/([a-zA-Z0-9_-]+)/);
+      if (match && match[1]) {
+        imgSrc = `https://drive.google.com/thumbnail?id=${match[1]}&sz=w800`;
+      }
+    }
+    // 這裡加入 referrerpolicy="no-referrer"
+    return `<img src="${imgSrc}" class="exam-img" referrerpolicy="no-referrer" alt="測驗圖片" loading="lazy">`;
+  }
+
+  return str;
+}
+
+  // 1. 初始化：載入隨機 80 題
+  window.addEventListener("DOMContentLoaded", () => {
+    fetch(GAS_API_URL)
+      .then(res => {
+        if (!res.ok) throw new Error("網路連線失敗");
+        return res.json();
+      })
+      .then(data => {
+        if (data.status === "error" || data.error) {
+          showError(data.message || data.error);
+          return;
+        }
+
+        examData = data;
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("exam-container").style.display = "block";
+        document.getElementById("submit-btn").style.display = "block";
+
+        renderExam();
+        startTimer();
+      })
+      .catch(err => {
+        showError("題庫載入失敗。請確認 Apps Script 部署權限是否設為「所有人 (Anyone)」，並使用正確的 /exec 網址。");
+      });
+  });
+
+  function showError(msg) {
+    const loadingElem = document.getElementById("loading");
+    loadingElem.style.color = "#dc2626";
+    loadingElem.innerText = msg;
+  }
+
+  // 2. 渲染 80 題題目
+  function renderExam() {
+    const container = document.getElementById("exam-container");
+    container.innerHTML = "";
+
+    examData.forEach((item, idx) => {
+      const qCard = document.createElement("div");
+      qCard.className = "question-card";
+
+      const optionsHtml = item.options.map((opt, optIdx) => {
+        const choiceNum = optIdx + 1;
+        return `
+          <label class="option-item" id="opt-label-${idx}-${choiceNum}">
+            <input type="radio" name="question-${idx}" value="${choiceNum}">
+            <div class="option-content">
+              <span>(${choiceNum})</span> ${formatContent(opt)}
+            </div>
+          </label>
+        `;
+      }).join("");
+
+      qCard.innerHTML = `
+        <div class="question-heading">
+          <span class="tag">第 ${idx + 1} 題</span>
+          ${formatContent(item.question)}
+          <span style="font-size: 0.8rem; color: #94a3b8; font-weight: normal;">[編號 #${item.id}]</span>
+        </div>
+        <div class="options-group">${optionsHtml}</div>
+      `;
+
+      container.appendChild(qCard);
+    });
+  }
+
+  // 3. 計時器運作
+  function startTimer() {
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      document.getElementById("timer").innerText = 
+        `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        alert("作答時間結束，系統將自動交卷！");
+        submitExam();
+      }
+    }, 1000);
+  }
+
+  // 4. 繳卷、計分與回傳
+  function submitExam() {
+    const studentName = document.getElementById("student-name").value.trim() || "未具名考生";
+
+    if (!confirm("確定要交卷嗎？送出後將立即結算成績。")) {
+      return;
+    }
+
+    clearInterval(timerInterval);
+    let correctCount = 0;
+    const wrongQuestionIds = [];
+
+    // 核對每一題答案
+    examData.forEach((q, idx) => {
+      const selected = document.querySelector(`input[name="question-${idx}"]:checked`);
+      const userChoice = selected ? parseInt(selected.value, 10) : null;
+
+      // 標註正確答案（綠底）
+      const correctElem = document.getElementById(`opt-label-${idx}-${q.answer}`);
+      if (correctElem) {
+        correctElem.classList.add("correct-choice");
+      }
+
+      if (userChoice === q.answer) {
+        correctCount++;
+      } else {
+        wrongQuestionIds.push(q.id);
+        // 若選錯則標註錯選選項（紅底）
+        if (userChoice !== null) {
+          const wrongElem = document.getElementById(`opt-label-${idx}-${userChoice}`);
+          if (wrongElem) {
+            wrongElem.classList.add("wrong-choice");
+          }
+        }
+      }
+
+      // 鎖定所有選項避免更動
+      document.querySelectorAll(`input[name="question-${idx}"]`).forEach(input => {
+        input.disabled = true;
+      });
+    });
+
+    // 依檢定規範計分：每題 1.25 分
+    const totalScore = (correctCount * 1.25).toFixed(2);
+
+    // 呈現成績畫面
+    document.getElementById("score-text").innerText = `${totalScore} 分`;
+    document.getElementById("details-text").innerText = 
+      `考生：${studentName} ｜ 總題數：${examData.length} 題 ｜ 答對：${correctCount} 題 ｜ 答錯/未答：${examData.length - correctCount} 題`;
+
+    const resultView = document.getElementById("result-view");
+    resultView.style.display = "block";
+
+    // 禁用送出按鈕
+    const submitBtn = document.getElementById("submit-btn");
+    submitBtn.disabled = true;
+    submitBtn.innerText = "已完成繳卷";
+
+    // 回傳成績至 Google 試算表後台 (POST)
+    fetch(GAS_API_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        studentName: studentName,
+        score: totalScore,
+        correctCount: correctCount,
+        totalCount: examData.length,
+        wrongQuestionIds: wrongQuestionIds
+      })
+    }).then(() => {
+      console.log("成績已傳送至後台試算表");
+    }).catch(err => {
+      console.error("後台回傳發生異常", err);
+    });
+
+    // 平滑滾動至結果面板
+    resultView.scrollIntoView({ behavior: "smooth" });
+  }
+</script>
+
+</body>
+</html>
